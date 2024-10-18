@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decimal Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Decimal to Binary, Hexadecimal, and Octal Converter</h1>
+        <input type="number" id="decimal" placeholder="Enter a decimal number">
+        <button onclick="convertNumber()">Convert</button>
+        
+        <div class="output">
+            <p>Binary: <span id="binary"></span></p>
+            <p>Hexadecimal: <span id="hexa"></span></p>
+            <p>Octal: <span id="octal"></span></p>
+        </div>
+    </div>
+    <script>
+    function convertNumber() {
+    let decimal = document.getElementById('decimal').value;
+    
+    if (decimal === '') {
+        alert('Please enter a vaild decimal number');
+        return;
+    }
+
+    let binary = parseInt(decimal, 10).toString(2);
+    let hex = parseInt(decimal, 10).toString(16).toUpperCase();
+    let octal = parseInt(decimal, 10).toString(8);
+
+    document.getElementById('binary').textContent = binary;
+    document.getElementById('hexa').textContent = hex;
+    document.getElementById('octal').textContent = octal;
+}
+
+    </script>
+</body>
+</html>

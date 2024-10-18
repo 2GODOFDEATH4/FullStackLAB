@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Validator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>HTML Validator</h1>
+        <textarea id="html-input" placeholder="Enter your HTML code here..."></textarea>
+        <button id="validate-btn">Validate</button>
+        <div class="result" id="validation-result"></div>
+    </div>
+    <script>
+    document.getElementById('validate-btn').addEventListener('click', validateHTML);
+
+    function validateHTML() {
+    const htmlInput = document.getElementById('html-input').value;
+    const resultDiv = document.getElementById('validation-result');
+    resultDiv.style.display = 'none';
+    resultDiv.classList.remove('error', 'success');
+
+    if (htmlInput.trim() === '') {
+        resultDiv.innerHTML = 'Please enter some HTML to validate.';
+        resultDiv.classList.add('error');
+        resultDiv.style.display = 'block';
+        return;
+    }
+
+    //creating a DOM tree
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(htmlInput, 'text/html');
+    let parserErrors = doc.querySelectorAll('parsererror');
+
+    if (parserErrors.length > 0) {
+        resultDiv.innerHTML = 'Invalid HTML syntax detected!';
+        resultDiv.classList.add('error');
+        resultDiv.style.display = 'block';
+        return;
+    }
+
+    let unclosedTagResult = hasUnclosedTags(htmlInput);
+    if (unclosedTagResult) {
+        resultDiv.innerHTML = `Error: Unclosed tag found on line ${unclosedTagResult.line}.`;
+        resultDiv.classList.add('error');
+        resultDiv.style.display = 'block';
+    } else {
+        resultDiv.innerHTML = 'No errors found in the HTML!';
+        resultDiv.classList.add('success');
+        resultDiv.style.display = 'block';
+    }
+}
+
+    // to return line number
+    function hasUnclosedTags(html) {
+    const lines = html.split('\n');
+    const tagPattern = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+    let tags = [];
+    let match;
+
+    for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+        const currentLine = lines[lineNumber];
+        while ((match = tagPattern.exec(currentLine)) !== null) {
+            let tag = match[1];
+            if (match[0].startsWith('</')) {
+                if (tags.length === 0 || tags[tags.length - 1].tag !== tag) {
+                    return { tag, line: lineNumber + 1 }; 
+                }
+                tags.pop();
+            } else {
+                tags.push({ tag, line: lineNumber + 1 });
+            }
+        }
+    }
+
+    if (tags.length !== 0) {
+        return tags[0]; 
+    }
+    return null;
+}
+
+
+    </script>
+</body>
+</html>

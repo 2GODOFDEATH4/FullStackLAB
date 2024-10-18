@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-container">
+            <h2 class="title">Form Validator</h2>
+            <form id="form">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name :</label>
+                    <input type="text" id="name" class="form-input" placeholder="Abhi Ram">
+                </div>
+                <div class="form-group">
+                    <label for="age" class="form-label">Age:</label>
+                    <input type="number" id="age" class="form-input" placeholder="25">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" class="form-input" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label for="mobile" class="form-label">Mobile:</label>
+                    <input type="text" id="mobile" class="form-input" placeholder="9876543210">
+                </div>
+                <div class="form-group">
+                    <label for="website" class="form-label">Website:</label>
+                    <input type="url" id="website" class="form-input" placeholder="https://example.com">
+                </div>
+                <button type="submit" class="submit-btn">Submit</button>
+                <div id="success-message" class="success-message">Thank you! Your form has been submitted.</div>
+            </form>
+        </div>
+    </div>
+    <script>
+      document.getElementById('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (validateForm()) {
+        displaySuccessMessage();
+    }
+});
+
+function validateForm() {
+    const isValidName = validateName();
+    const isValidAge = validateAge();
+    const isValidEmail = validateEmail();
+    const isValidMobile = validateMobile();
+    const isValidWebsite = validateWebsite();
+
+    return isValidName && isValidAge && isValidEmail && isValidMobile && isValidWebsite;
+}
+
+function validateName() {
+    const name = document.getElementById('name');
+    const regex = /^[A-Za-z]{2,}\s[A-Za-z]{2,}$/;
+    return validateField(name, regex);
+}
+
+function validateAge() {
+    const age = document.getElementById('age');
+    if (age.value >= 18 && age.value <= 60) {
+        setValid(age);
+        return true;
+    } else {
+        setInvalid(age);
+        return false;
+    }
+}
+
+function validateEmail() {
+    const email = document.getElementById('email');
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return validateField(email, regex);
+}
+
+function validateMobile() {
+    const mobile = document.getElementById('mobile');
+    const regex = /^[6-9]\d{9}$/;
+    return validateField(mobile, regex);
+}
+
+function validateWebsite() {
+    const website = document.getElementById('website');
+    const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/[\w .-]*)*\/?$/;
+    return validateField(website, regex);
+}
+
+function validateField(input, regex) {
+    if (regex.test(input.value)) {
+        setValid(input);
+        return true;
+    } else {
+        setInvalid(input);
+        return false;
+    }
+}
+
+function setValid(input) {
+    input.classList.add('valid');
+    input.classList.remove('invalid');
+}
+
+function setInvalid(input) {
+    input.classList.add('invalid');
+    input.classList.remove('valid');
+}
+
+function displaySuccessMessage() {
+    document.getElementById('success-message').style.display = 'block';
+    setTimeout(() => {
+        document.getElementById('success-message').style.display = 'none';
+        document.getElementById('form').reset();
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.classList.remove('valid');
+            input.classList.remove('invalid');
+        });
+    }, 3000);
+}
+
+    </script>
+</body>
+</html>
